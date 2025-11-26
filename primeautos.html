@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prime Auto Dealership - Drive Your Dream Car Today</title>
+  <meta name="description" content="Discover premium vehicles at unbeatable prices. Browse our collection of luxury cars from Mercedes, BMW, Audi, Tesla and more.">
+  <meta name="author" content="Prime Auto Dealership">
+
+  <style>
+    :root {
+      --background: #111; 
+      --foreground: #fff;
+      --card: #1a1a1a;
+      --card-foreground: #fff;
+      --secondary: #222;
+      --secondary-foreground: #fff;
+      --border: #555;
+      --input: #222;
+
+      --primary: #ffffff;
+      --accent: #ffffff;
+      --primary-foreground: #111;
+      --gradient-primary: linear-gradient(135deg, #ffffff, #dcdcdc);
+      --shadow-glow: 0 0 20px rgba(255,255,255,0.4);
+      --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--background); color: var(--foreground); }
+
+    header { background: rgba(16,18,22,0.95); backdrop-filter: blur(10px); position: sticky; top:0; border-bottom:1px solid var(--border); z-index:50; }
+    header h1 { font-size: 2rem; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+    .container { max-width: 1200px; margin:auto; padding: 0 1rem; }
+
+    .hero { height: 500px; position: relative; display:flex; justify-content:center; align-items:center; text-align:center; }
+    .hero::before { content:""; position:absolute; inset:0; background:url('https://images.pexels.com/photos/210019/pexels-photo-210019.jpeg') center/cover; z-index:0; }
+    .hero::after { content:""; position:absolute; inset:0; background:rgba(0,0,0,0.7); z-index:1; }
+    .hero-content { z-index:2; }
+
+    .nav-btn {
+      padding: 0.5rem 1rem;
+      background: var(--secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--foreground);
+      transition: 0.3s;
+      text-decoration:none;
+      position:relative;
+    }
+    .nav-btn:hover {
+      background: var(--primary);
+      color: var(--primary-foreground);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .search-bar { display:flex; gap:0.5rem; margin:1rem 0; justify-content:center; }
+    .search-bar input {
+      padding:0.5rem; border-radius:var(--radius); border:1px solid var(--border);
+      background: var(--input); color: var(--foreground); width:300px;
+    }
+
+    .btn { padding: 0.5rem 1rem; border-radius: var(--radius); border:none; font-weight:600; cursor:pointer; }
+    .btn-primary { background: var(--primary); color: var(--primary-foreground); }
+    .btn-primary:hover { box-shadow: var(--shadow-glow); transform: translateY(-2px); }
+
+    input { width: 100%; padding: 0.6rem; margin: 0.4rem 0; border-radius: var(--radius); border: 1px solid var(--border); background: var(--input); color: var(--foreground); }
+
+    .car-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:1rem; margin:2rem 0; }
+    .car-card { background: var(--card); border-radius: var(--radius); overflow:hidden; border:1px solid var(--border); transition:0.4s; }
+    .car-card:hover { transform:translateY(-3px); box-shadow: var(--shadow-glow); }
+    .car-card img { width:100%; height:200px; object-fit:cover; cursor:pointer; transition:0.4s; }
+    .car-card img:hover { transform:scale(1.1); }
+
+    footer { background: var(--secondary); padding:1rem; text-align:center; color:var(--foreground); }
+
+    .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); align-items:center; justify-content:center; z-index:100; }
+    .modal.active { display:flex; }
+
+    .modal-content {
+      background:var(--card); padding:1.5rem; border-radius:var(--radius);
+      max-width:500px; width:90%; position:relative;
+    }
+    .modal-close {
+      background:none; border:none; font-size:2rem; color:white;
+      position:absolute; top:0.5rem; right:0.7rem; cursor:pointer;
+    }
+
+    .progress-container { margin-top:1rem; background:var(--secondary); border-radius:var(--radius); height: 1rem; }
+    .progress-bar { height:100%; background:var(--primary); width:0%; transition:1s; }
+
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container" style="display:flex; justify-content:space-between; align-items:center; padding:1rem 0;">
+    <h1>Prime Auto</h1>
+
+    <nav style="display:flex; gap:1rem;">
+      <a href="#cars" class="nav-btn">Cars</a>
+      <button class="nav-btn" id="deliveryBtn">Delivery Status</button>
+      <a href="#contact" class="nav-btn">Contact</a>
+    </nav>
+  </div>
+
+  <div class="container search-bar">
+    <input type="text" placeholder="Search cars..." id="searchInput">
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-content">
+    <h2 style="font-size:3rem;">Drive Your Dream Car Today</h2>
+    <p>Premium vehicles at unbeatable prices</p>
+  </div>
+</section>
+
+<section class="container" id="cars">
+  <h2 style="text-align:center; margin:2rem 0; font-size:2rem;">Featured Car Models</h2>
+  <div class="car-grid" id="carGrid"></div>
+</section>
+
+<section class="container" id="contact" style="margin-top:3rem;">
+  <h2 style="text-align:center; margin:2rem 0;">Contact Us</h2>
+  <p style="text-align:center;">Phone: 0312-3456789 | Email: primeautos123@gmail.com</p>
+  <p style="text-align:center;">Address: Prime Auto Dealership Headquarters</p>
+</section>
+
+<footer>
+  <p>© 2025 Prime Auto Dealership — All Rights Reserved</p>
+</footer>
+
+<!-- CAR MODAL -->
+<div class="modal" id="carModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('carModal')">&times;</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<!-- DELIVERY MODAL -->
+<div class="modal" id="deliveryModal">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal('deliveryModal')">&times;</button>
+    <div id="deliveryBody"></div>
+  </div>
+</div>
+
+<script>
+/* ============================
+       CAR DATA + AVAILABILITY
+   ============================ */
+const cars = [
+ { name:"Suzuki Swift", price:"4766190", priceUSD:"$16,887", availability:"In Stock", image:"https://imgcdn.zigwheels.pk/large/gallery/color/13/111/suzuki-swift-color-811738.jpg", specs:"1.2L engine, 82hp, CVT/Manual, 15–18 km/l mileage."}, 
+ { name:"Mercedes C-Class", price:"41000000", priceUSD:"$145,266", availability:"Limited Stock", image:"https://tyrepoint.pk/wp-content/uploads/2018/08/Mercedes-C-Class-5.jpg", specs:"2.0L Turbo, 255hp, 9G-Tronic, luxury comfort."}, 
+ { name:"Toyota Fortuner", price:"17939000", priceUSD:"$63,559", availability:"In Stock", image:"https://toyotasouthern.com/wp-content/uploads/2023/05/Fortuner-grs-gallery-Img-2-copy-798x466.jpg", specs:"2.8L Diesel, 201hp 4×4 SUV."}, 
+ { name:"Toyota Corolla", price:"6599000", priceUSD:"$23,380", availability:"In Stock", image:"https://imgcdn.zigwheels.pk/large/gallery/exterior/14/113/toyota-corolla-altis-front-angle-low-view-975505.jpg", specs:"Reliable, 1.6/1.8L engine, 13–16 km/l mileage."}, 
+ { name:"Honda City", price:"5737000", priceUSD:"$20,326", availability:"High Demand", image:"https://imgcdn.zigwheels.pk/large/gallery/exterior/8/48/honda-city-front-angle-low-view-631486.jpg", specs:"1.2L/1.5L i-VTEC, 14–18 km/l."}, 
+ { name:"Honda Accord", price:"12500000", priceUSD:"$44,288", availability:"Limited Stock", image:"https://cache2.pakwheels.com/system/car_generation_pictures/6831/original/Honda_Accord_Front_Right_angled_.jpg?1663243625", specs:"Premium sedan, Honda Sensing, turbo engines."}, 
+ { name:"Hyundai Sonata", price:"13330000", priceUSD:"$47,229", availability:"In Stock", image:"https://propakistani.pk/wp-content/uploads/2025/01/N-Line.jpg", specs:"2.0L/2.5L, luxury comfort."}, 
+ { name:"Hyundai Tucson", price:"13220000", priceUSD:"$46,839", availability:"In Stock", image:"https://hyundai-nishat.com/wp-content/uploads/2025/05/NX4_WEBSITE_HIGHLIGHTS_00_1120x600-min.jpg", specs:"AWD SUV, 155 hp."}, 
+ { name:"Nissan Patrol", price:"16400000", priceUSD:"$58,106", availability:"Limited Stock", image:"https://static.pakwheels.com/2024/09/gef.jpg", specs:"5.6L V8, 400 hp luxury off-road SUV."}, 
+ { name:"Nissan Skyline", price:"10500000", priceUSD:"$37,202", availability:"Imported Only", image:"https://m.media-amazon.com/images/I/71CBCZN85RL._AC_SL1500_.jpg", specs:"Iconic JDM 3.0L TT sports car."}, 
+ { name:"BMW X1", price:"6000000", priceUSD:"$21,258", availability:"Low Stock", image:"https://etimg.etb2bimg.com/photo/97429237.cms", specs:"Compact luxury SUV, 138–228hp."}, 
+ { name:"Mercedes G-Class", price:"319200000", priceUSD:"$1,130,951", availability:"Imported Only", image:"https://images.prismic.io/carwow/20a1c3ed-4566-4265-a66f-6a167e4a9670_2021+Mercedes+G-Class+front+quarter+static.jpg", specs:"4.0L V8, luxury + off-road power."}, 
+ { name:"Audi A6", price:"4550000", priceUSD:"$16,121", availability:"In Stock", image:"https://cache2.pakwheels.com/system/car_generation_pictures/6393/original/Audi_A6_Front.jpg", specs:"Business-class sedan, Quattro AWD."}, 
+ { name:"Audi e-tron GT", price:"70000000", priceUSD:"$248,015", availability:"Imported Only", image:"https://cdn.motor1.com/images/mgl/9m4RBp/s3/2025-audi-e-tron-gt.jpg", specs:"Electric sedan, 380–480 km range."}, 
+ { name:"Tesla Model Y", price:"35000000", priceUSD:"$124,007", availability:"Imported Only", image:"https://autopower.com.pk/wp-content/uploads/2025/01/Tesla-Model-Y.jpg", specs:"Electric SUV, 455–530 km range, autopilot included."}, 
+ { name:"BMW M4", price:"37500000", priceUSD:"$132,865", availability:"Limited Stock", image:"https://imgd.aeplcdn.com/664x374/n/cw/ec/176129/m4-competition-exterior-right-front-three-quarter-3.jpeg", specs:"Twin-turbo 3.0L, 473–503 hp sports coupe."}
+];
+
+let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+
+/* ============================
+        RENDER CAR CARDS
+   ============================ */
+function renderCars(list=cars) {
+  const carGrid = document.getElementById("carGrid");
+  carGrid.innerHTML = "";
+  list.forEach(car => {
+    carGrid.innerHTML += `
+      <div class="car-card">
+        <img src="${car.image}" onclick="openCarModal('${car.name}')">
+
+        <div style="padding:1rem;">
+          <h3>${car.name}</h3>
+
+          <p><strong>Availability:</strong> ${car.availability}</p>
+
+          <p>PKR ${Number(car.price).toLocaleString()}</p>
+          <p>${car.priceUSD}</p>
+
+          <button class="btn btn-primary" onclick="buyCar('${car.name}')">Buy Now</button>
+        </div>
+      </div>`;
+  });
+}
+renderCars();
+
+/* ============================
+        CAR DETAILS MODAL
+   ============================ */
+function openCarModal(name) {
+  const car = cars.find(c => c.name === name);
+
+  document.getElementById("modalBody").innerHTML = `
+    <h2>${car.name}</h2>
+
+    <img src="${car.image}" style="width:100%; border-radius:12px; margin-bottom:1rem;">
+
+    <p><strong>Availability in Pakistan:</strong> ${car.availability}</p>
+
+    <p>${car.specs}</p>
+
+    <p><strong>PKR ${Number(car.price).toLocaleString()}</strong> (${car.priceUSD})</p>
+
+    <button class="btn btn-primary" onclick="buyCar('${car.name}')">Buy Now</button>
+  `;
+
+  document.getElementById("carModal").classList.add("active");
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove("active");
+}
+
+/* ============================
+           BUY FORM
+   ============================ */
+let purchaseCar = null;
+function buyCar(name) {
+  purchaseCar = name;
+
+  document.getElementById("modalBody").innerHTML = `
+    <h2>Purchase ${name}</h2>
+
+    <label>Name:</label>
+    <input type="text" id="buyerName">
+
+    <label>Contact:</label>
+    <input type="text" id="buyerContact">
+
+    <label>Email Address:</label>
+    <input type="email" id="buyerEmail">
+
+    <label>Delivery Date:</label>
+    <input type="date" id="deliveryDate">
+
+    <label>Delivery Location:</label>
+    <input type="text" id="deliveryLocation">
+
+    <button class="btn btn-primary" onclick="confirmPurchase()">Confirm Purchase</button>
+  `;
+
+  document.getElementById("carModal").classList.add("active");
+}
+
+/* ============================
+         CONFIRM PURCHASE
+   ============================ */
+function confirmPurchase() {
+  const order = {
+    car: purchaseCar,
+    availability: cars.find(c => c.name === purchaseCar).availability,
+    name: document.getElementById("buyerName").value,
+    contact: document.getElementById("buyerContact").value,
+    email: document.getElementById("buyerEmail").value,
+    date: document.getElementById("deliveryDate").value,
+    location: document.getElementById("deliveryLocation").value,
+    status: 0
+  };
+
+  if (!order.name || !order.contact || !order.email || !order.date || !order.location) {
+    alert("Please fill all fields.");
+    return;
+  }
+
+  orders.push(order);
+  localStorage.setItem("orders", JSON.stringify(orders));
+
+  alert("Purchase Confirmed!");
+  closeModal('carModal');
+}
+
+/* ============================
+         DELIVERY MODAL
+   ============================ */
+document.getElementById("deliveryBtn").addEventListener("click", () => {
+  const deliveryBody = document.getElementById("deliveryBody");
+
+  if (orders.length === 0) {
+    deliveryBody.innerHTML = "<p>No active orders.</p>";
+  } else {
+    deliveryBody.innerHTML = orders.map(order => `
+      <h3>${order.car}</h3>
+
+      <p><strong>Availability:</strong> ${order.availability}</p>
+
+      <p><strong>Name:</strong> ${order.name}</p>
+      <p><strong>Contact:</strong> ${order.contact}</p>
+      <p><strong>Email:</strong> ${order.email}</p>
+      <p><strong>Delivery Date:</strong> ${order.date}</p>
+      <p><strong>Location:</strong> ${order.location}</p>
+
+      <div class="progress-container">
+        <div class="progress-bar" style="width:${(order.status+1)*25}%"></div>
+      </div>
+
+      <p>${["Order Placed","Processing","Shipped","Out for Delivery","Delivered"][order.status]}</p>
+      <hr>
+    `).join('');
+  }
+
+  document.getElementById("deliveryModal").classList.add("active");
+});
+
+/* ============================
+          LIVE SEARCH
+   ============================ */
+document.getElementById('searchInput').addEventListener('input', () => {
+  const searchText = document.getElementById('searchInput').value.toLowerCase();
+  const filtered = cars.filter(car => car.name.toLowerCase().includes(searchText));
+  renderCars(filtered);
+});
+</script>
+
+</body>
+</html>
